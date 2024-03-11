@@ -1,0 +1,97 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.sLoc.Declare(String)
+V.Local.sLot.Declare(String)
+V.Local.sBin.Declare(String)
+V.Local.sHeat.Declare(String)
+V.Local.sSerial.Declare(String)
+V.Local.sNewPart.Declare(String)
+V.Local.sGlobalPart.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.iLinkIDOld.Declare(Long)
+V.Local.iLinkIDNew.Declare(Long)
+V.Local.bRet.Declare(Boolean)
+
+
+F.Intrinsic.Control.SelectCase(V.Caller.Hook)
+	F.Intrinsic.Control.Case(47360)
+		V.Local.sLot.Set(V.Passed.INV022GI-PASS-LOT.Trim)
+		V.Local.sBin.Set(V.Passed.INV022GI-PASS-BIN.Trim)
+		V.Local.sHeat.Set(V.Passed.INV022GI-PASS-HEAT.Trim)
+		V.Local.sSerial.Set(V.Passed.INV022GI-PASS-SERIAL.Trim)
+		F.Intrinsic.String.Build("{0}$!${1}$!${2}$!${3}",V.Local.sLot,V.Local.sBin,V.Local.sHeat,V.Local.sSerial,V.Passed.GLOBAL)
+
+	F.Intrinsic.Control.Case(41610)
+		F.Intrinsic.String.Split(V.Passed.GLOBAL,"$!$",V.Local.sGlobalPart)
+		V.Local.sPart.Set(V.Passed.000001)
+		V.Local.sLoc.Set(V.Passed.000002)
+		V.Local.sLot.Set(V.Passed.000004)
+		V.Local.sBin.Set(V.Passed.000005)
+		V.Local.sHeat.Set(V.Passed.000007)
+		V.Local.sSerial.Set(V.Passed.000008)
+		F.Intrinsic.String.RPad(V.Local.sPart," ",20,V.Local.sPart)
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sPart,V.Local.sLoc,V.Local.sPart)
+		F.Intrinsic.String.RPad(V.Local.sPart," ",22,V.Local.sPart)
+
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sPart,V.Local.sGlobalPart(0),V.Local.sGlobalPart(0))
+		F.Intrinsic.String.RPad(V.Local.sGlobalPart(0)," ",37,V.Local.sGlobalPart(0))
+
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sGlobalPart(0),V.Local.sGlobalPart(1),V.Local.sGlobalPart(0))
+		F.Intrinsic.String.RPad(V.Local.sGlobalPart(0)," ",43,V.Local.sGlobalPart(0))
+
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sGlobalPart(0),V.Local.sGlobalPart(2),V.Local.sGlobalPart(0))
+		F.Intrinsic.String.RPad(V.Local.sGlobalPart(0)," ",58,V.Local.sGlobalPart(0))
+	
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sGlobalPart(0),V.Local.sGlobalPart(3),V.Local.sGlobalPart(0))
+		F.Intrinsic.String.RPad(V.Local.sGlobalPart(0)," ",125,V.Local.sGlobalPart(0))
+
+		F.Global.DocumentControl.GetLinkID(V.Local.sGlobalPart(0),"0031",V.Local.iLinkIDOld)
+
+		
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sPart,V.Local.sLot,V.Local.sNewPart)
+		F.Intrinsic.String.RPad(V.Local.sNewPart," ",37,V.Local.sNewPart)
+
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sNewPart,V.Local.sBin,V.Local.sNewPart)
+		F.Intrinsic.String.RPad(V.Local.sNewPart," ",43,V.Local.sNewPart)
+
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sNewPart,V.Local.sHeat,V.Local.sNewPart)
+		F.Intrinsic.String.RPad(V.Local.sNewPart," ",58,V.Local.sNewPart)
+
+		F.Intrinsic.String.Build(" {0}{1}",V.Local.sNewPart,V.Local.sSerial,V.Local.sNewPart)
+		F.Intrinsic.String.RPad(V.Local.sNewPart," ",125,V.Local.sNewPart)
+
+		F.Global.DocumentControl.CreateReference(V.Local.sNewPart,"0031",V.Local.iLinkIDNew)
+		F.Global.DocumentControl.Copy(V.Local.iLinkIDOld,V.Local.iLinkIDNew,V.Local.bRet)
+
+F.Intrinsic.Control.EndSelect
+
+F.Intrinsic.Control.End
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_BRO_Copy_DCC.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.Comments.Start
+${$0$}$$}$SKT$}$4/21/2015 2:10:38 PM
+Program.Sub.Comments.End
+
